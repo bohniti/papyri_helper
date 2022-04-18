@@ -1,0 +1,251 @@
+[dataset0]
+nr = 0
+name = 'base_line_small'
+selection = 'random'
+m = 64
+n = 5
+
+[dataset1]
+nr = 1
+name = 'baseline_small_big'
+selection = 'random'
+m = 64
+n = 20
+
+[dataset2]
+nr = 2
+name = 'baseline_medium_small'
+selection = 'random'
+m = 128
+n = 5
+
+[dataset3]
+nr = 3
+name = 'baseline_medium_big'
+selection = 'random'
+m = 128
+n = 20
+
+[dataset4]
+nr = 4
+name = 'baseline_big_small'
+selection = 'random'
+m = 256
+n = 5
+
+[dataset5]
+nr = 5
+name = 'baseline_big_big'
+selection = 'random'
+m = 256
+n = 20
+
+[dataset6]
+nr = 6
+name = 'mean_small_small'
+selection = 'mean'
+m = 64
+n = 5
+
+[dataset7]
+nr = 7
+name = 'mean_small_big'
+selection = 'mean'
+m = 64
+n = 20
+
+[dataset8]
+nr = 8
+name = 'mean_medium_small'
+selection = 'mean'
+m = 128
+n = 5
+
+[dataset9]
+nr = 9
+name = 'mean_medium_big'
+selection = 'mean'
+m = 128
+n = 20
+
+[dataset10]
+nr = 10
+name = 'mean_big_small'
+selection = 'mean'
+m = 256
+n = 5
+
+[dataset11]
+nr = 11
+name = 'mean_big_big'
+selection = 'mean'
+m = 256
+n = 20
+
+[dataset12]
+nr = 12
+name = 'text_small_small'
+selection = 'text'
+m = 64
+n = 5
+
+[dataset13]
+nr = 13
+name = 'text_small_big'
+selection = 'text'
+m = 64
+n = 20
+
+[dataset14]
+nr = 14
+name = 'text_medium_small'
+selection = 'text'
+m = 128
+n = 5
+
+[dataset15]
+nr = 15
+name = 'text_medium_big'
+selection = 'text'
+m = 128
+n = 20
+
+[dataset16]
+nr = 16
+name = 'text_big_small'
+selection = 'text'
+m = 256
+n = 5
+
+[dataset17]
+nr = 17
+name = 'text_big_big'
+selection = 'text'
+m = 256
+n = 20
+
+[dataset18]
+nr = 18
+name = 'papyri_small_small'
+selection = 'papyri'
+m = 64
+n = 5
+
+[dataset19]
+nr = 19
+name = 'papyri_small_big'
+selection = 'papyri'
+m = 64
+n = 20
+
+[dataset20]
+nr = 20
+name = 'papyri_medium_small'
+selection = 'papyri'
+m = 128
+n = 5
+
+[dataset21]
+nr = 21
+name = 'papyri_medium_big'
+selection = 'papyri'
+m = 128
+n = 20
+
+[dataset22]
+nr = 22
+name = 'papyri_big_small'
+selection = 'papyri'
+m = 256
+n = 5
+
+[dataset23]
+nr = 23
+name = 'papyri_big_big'
+selection = 'papyri'
+m = 256
+n = 20
+
+[dataset24]
+nr = 24
+name = 'h_text_small_small'
+selection = 'h_text'
+m = 64
+n = 5
+
+[dataset25]
+nr = 25
+name = 'h_text_small_big'
+selection = 'h_text'
+m = 64
+n = 20
+
+[dataset26]
+nr = 26
+name = 'h_text_medium_small'
+selection = 'h_text'
+m = 128
+n = 5
+
+[dataset27]
+nr = 27
+name = 'h_text_medium_big'
+selection = 'h_text'
+m = 128
+n = 20
+
+[dataset28]
+nr = 28
+name = 'h_text_big_small'
+selection = 'h_text'
+m = 256
+n = 5
+
+[dataset29]
+nr = 29
+name = 'h_text_big_big'
+selection = 'h_text'
+m = 256
+n = 20
+
+[dataset30]
+nr = 30
+name = 'h_fibers_small_small'
+selection = 'h_fibers'
+m = 64
+n = 5
+
+[dataset31]
+nr = 31
+name = 'h_fibers_small_big'
+selection = 'h_fibers'
+m = 64
+n = 20
+
+[dataset32]
+nr = 32
+name = 'h_fibers_medium_small'
+selection = 'h_fibers'
+m = 128
+n = 5
+
+[dataset33]
+nr = 33
+name = 'h_fibers_medium_big'
+selection = 'h_fibers'
+m = 128
+n = 20
+
+[dataset34]
+nr = 34
+name = 'h_fibers_big_small'
+selection = 'h_fibers'
+m = 256
+n = 5
+
+[dataset35]
+nr = 35
+name = 'h_fibers_big_big'
+selection = 'h_fibers'
+m = 256
+n = 20

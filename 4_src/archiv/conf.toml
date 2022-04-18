@@ -1,0 +1,30 @@
+[settings] 
+path_debug = './gdrive/MyDrive/mt/data/debug'
+data = '/dataset_1'
+csv = './gdrive/MyDrive/mt/data/info.csv'
+path_train = './train'
+path_val  = './val'
+path_test = './test'
+output = './gdrive/MyDrive/mt/out/'
+experiment_name = 'Dataset_3_Scheduler_Densenet121_MultiSimilarityLoss_MultiSimilarityMiner'
+
+[params]
+num_epochs = 25
+batch_size = 256
+trunk = 'densenet121'
+metric_loss = 'MultiSimilarityLoss'
+miner = 'MultiSimilarityMiner'
+normalize_1 = 0.6143
+normalize_2 = 0.6884
+normalize_3 = 0.7665
+normalize_4 = 0.2909
+normalize_5 = 0.2548
+normalize_6 = 0.2122
+trunk_optimizer_lr = 0.00001
+trunk_optimizer_weight_decay = 0.0001
+embedder_optimizer_lr = 0.0001
+embedder_optimizer_weight_decay = 0.0001
+classifier_optimizer_lr = 0.0001
+classifier_optimizer_weight_decay = 0.0001
+test_interval = 1
+patience = 3

@@ -1,0 +1,188 @@
+[dataset0]
+nr = 0
+name = 'base_line_small_small'
+selection = 'random'
+m = 64
+n = 5
+
+[dataset1]
+nr = 1
+name = 'baseline_small_big'
+selection = 'random'
+m = 64
+n = 20
+
+[dataset2]
+nr = 2
+name = 'baseline_small_bigger'
+selection = 'random'
+m = 64
+n = 40
+
+[dataset3]
+nr = 3
+name = 'baseline_medium_small'
+selection = 'random'
+m = 128
+n = 5
+
+[dataset4]
+nr = 4
+name = 'baseline_medium_big'
+selection = 'random'
+m = 128
+n = 20
+
+[dataset5]
+nr = 5
+name = 'baseline_medium_bigger'
+selection = 'random'
+m = 128
+n = 40
+
+[dataset6]
+nr = 6
+name = 'baseline_big_small'
+selection = 'random'
+m = 256
+n = 5
+
+[dataset7]
+nr = 7
+name = 'baseline_big_big'
+selection = 'random'
+m = 256
+n = 20
+
+[dataset8]
+nr = 8
+name = 'baseline_big_bigger'
+selection = 'random'
+m = 256
+n = 40
+
+[dataset9]
+nr = 9
+name = 'mean_small_small'
+selection = 'mean'
+m = 64
+n = 5
+
+[dataset10]
+nr = 10
+name = 'mean_small_big'
+selection = 'mean'
+m = 64
+n = 20
+
+[dataset11]
+nr = 11
+name = 'mean_small_bigger'
+selection = 'mean'
+m = 64
+n = 40
+
+[dataset12]
+nr = 12
+name = 'mean_medium_small'
+selection = 'mean'
+m = 128
+n = 5
+
+[dataset13]
+nr = 13
+name = 'mean_medium_big'
+selection = 'mean'
+m = 128
+n = 20
+
+[dataset14]
+nr = 14
+name = 'mean_medium_bigger'
+selection = 'mean'
+m = 128
+n = 40
+
+[dataset15]
+nr = 15
+name = 'mean_big_small'
+selection = 'mean'
+m = 256
+n = 5
+
+[dataset16]
+nr = 16
+name = 'mean_big_big'
+selection = 'mean'
+m = 256
+n = 20
+
+[dataset17]
+nr = 17
+name = 'mean_big_bigger'
+selection = 'mean'
+m = 256
+n = 20
+
+[dataset18]
+nr = 18
+name = 'text_small_small'
+selection = 'text'
+m = 64
+n = 5
+
+[dataset19]
+nr = 19
+name = 'text_small_big'
+selection = 'text'
+m = 64
+n = 20
+
+[dataset20]
+nr = 20
+name = 'text_small_bigger'
+selection = 'text'
+m = 64
+n = 40
+
+[dataset21]
+nr = 21
+name = 'text_medium_small'
+selection = 'text'
+m = 128
+n = 5
+
+[dataset22]
+nr = 22
+name = 'text_medium_big'
+selection = 'text'
+m = 128
+n = 20
+
+[dataset23]
+nr = 23
+name = 'text_medium_bigger'
+selection = 'text'
+m = 128
+n = 40
+
+[dataset24]
+nr = 24
+name = 'text_big_small'
+selection = 'text'
+m = 256
+n = 5
+
+[dataset25]
+nr = 25
+name = 'text_big_big'
+selection = 'text'
+m = 256
+n = 20
+
+[dataset26]
+nr = 26
+name = 'text_big_bigger'
+selection = 'text'
+m = 256
+n = 40

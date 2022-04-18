@@ -1,0 +1,7 @@
+[settings]
+data ='/Users/beantown/PycharmProjects/master-thesis/data/preprocessed/datasets/7_baseline_big_big_0'
+csv = '/Users/beantown/PycharmProjects/master-thesis/data/preprocessed/datasets/7_baseline_big_big_0/test.csv'
+mode = 'val'
+trunk_model =  '/Users/beantown/PycharmProjects/master-thesis/results/7_baseline_big_big/saved_models/trunk_best21.pth'
+embedder_model = '/Users/beantown/PycharmProjects/master-thesis/results/7_baseline_big_big/saved_models/embedder_best21.pth'
+threshold = 0.9

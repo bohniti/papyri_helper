@@ -1,0 +1,88 @@
+   \documentclass[12pt,a4paper]{article}
+\usepackage{german}
+\usepackage{times}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{microtype}
+%\usepackage{doublespace}
+%------------------------------------------------------------------------------
+%\setstretch{1.0}
+\voffset-5mm
+\hoffset-5mm
+\textwidth17cm
+\textheight24cm
+\headsep0mm
+\headheight0mm
+\oddsidemargin0.3mm
+\pagestyle{empty}
+\parindent0mm
+\parskip1ex
+%------------------------------------------------------------------------------
+%==============================================================================
+
+\providecommand{\etal}[1]{#1\emph{~et~al.\xspace}}
+\renewcommand\refname{References}
+
+%inset reserach questions
+\usepackage{enumitem}
+
+\newlist{questions}{enumerate}{2}
+\setlist[questions,1]{label=\bf{RQ\Roman*:},ref=RQ\Roman*}
+\setlist[questions,2]{label=(\alph*),ref=\thequestionsi(\alph*)}
+
+
+\begin{document}
+\begin{center}
+	Master's Thesis at the Pattern Recognition Lab, FAU Erlangen-Nuremberg 
+																		
+	\mbox{}\\
+	%TODO maybe matching instead of retrive 
+	{\Large Determining the Influence of Papyrus Characteristics on Fragments Retrieval with Deep Metric Learning}			
+\end{center}
+Ancient papyri are frequently torn into several fragments, and the task of papyrologists is to assemble and decipher these fragments. Once successfully reconstructed, ancient papyrus offers the opportunity to gather crucial information about past times. However, reassembling by hand is time-consuming because fragments differ in color, structure, and shape. In other words, they do not fit together perfectly - like an artificially designed toy puzzle. 
+\\\\
+The objective of this thesis is to make the work of papyrologists easier and increase their efficiency by partially automating the reassembling process. To this end, an algorithm is designed to infer a smaller sub-selection of fragments with a high likelihood of being a potential fit. In the following, this algorithm is called puzzle-helper.
+\\\\
+In a real-world scenario, a puzzle-helper must fulfill several constraints. First, training such a helper cannot take advantage of a big data set of fragmented and reassembled (labeled) papyri because only a tiny bit of such data exists. Deep Metric Learning (DML) has been used successfully to create puzzle helpers, \cite{Ostertag21, Pirrone21}. Further improvement of DML models requires an immense amount of data. Otherwise, the model will probably not converge. Labeling manually makes the puzzle-helper useless because the total time required by a papyrologist increases. Therefore, the task of creating labeled data has to be automated. In this thesis, we will create an extensive data set by semi-automatically and artificially tearing papyri into several pieces. \cite{Seuret21}. More fragments lead to a significant increase in overall model performance \cite{Pirrone21, Ostertag21}.
+Another constraint is, of course, that the ground truth fragment has to be included in the subset of potential candidates. If the ground truth match is not enclosed, a papyrologist has no chance to identify the correct fragment unless he extends his search again to the entire data set. Another disadvantage is that the approach fails silently. The papyrologist might search long for a match if the expert is convinced that the algorithm works fine. Separating foreground and background is challenging because a fiber often has similar colors as the text. Therefore, several methods will be used and evaluated on the puzzle-helper accuracy. A separate evaluation is not straightforward and is misleading because we do not have pixel-wise ground truth \cite{Tensmeyer20}. Also, the focus of this thesis lies on the influence of specific characteristics and the power of more labeled data available instead of the separating process itself.
+\\\\
+Further experiments will examine whether specific characteristics (fibers) can be exploited. Specifically, it will be tested if the fibers can be used to determine the exact position of the fragments to each other. Determining the position is the next logical step towards a fully automated helper. The final goal is to design a puzzle solver function by combining the DML model and a suitable method for position determination. 
+\\\\
+In summary, the thesis is divided into the following milestones:
+
+\begin{enumerate}[label=\bf{\Roman*.}]
+	\item Creating a dataset tailored for fragment retrieval tasks based on the University of Michigan Papyrus Collection. 
+	\item Separating text and papyrus fibers by using state-of-the-art binarization \cite{Tensmeyer20} and inpainting \cite{Liu18Impainting}.
+	
+	\item Evaluation by means of a DML model using the original data in the original state (text and fibers) and in the processed state (text only or fibers only).
+	
+	\item Conduct experiments to determine the position of a possible matching candidate  with the help of papyrus fibers.
+\end{enumerate}
+
+The following research questions emerge from the milestones:
+
+\begin{questions}
+	\item  Does the puzzle-helpers-accuracy differ significantly when only the text or only the fibers are used as input as opposed to the unprocessed data?  
+	
+	\item  Is it possible to determine the position of a fragment out of several matching candidates?
+	
+\end{questions}
+
+		
+The implementation will be done in Python.\\
+		
+\begin{tabular}{ll}
+	\emph{Supervisors:} & Dr.-Ing.~V.~Christlein,  Prof.~Dr.-Ing.~habil.~A.~Maier, Mathias Seuret M. Sc.
+	\\
+	\emph{Student:}     & Timo Bohnstedt
+	\\
+	\emph{Start:}       & December 1, 2021                                            \\
+	\emph{End:}         & April 30th, 2022                                        \\
+\end{tabular}
+\nopagebreak[4]
+\small
+\bibliographystyle{IEEEtran}
+\bibliography{proposal}
+		
+\end{document}
+%==============================================================================

@@ -1,0 +1,129 @@
+\chapter{Results}
+\label{chap:results}
+\Cref{chap:results} presents the results while conducting the experiments presented in \Cref{chap:methodology}. The objective is simply to present the results without further interpreting the meaning. The deeper evaluation will take place in \Cref{chap:discussion}.
+%
+\begin{figure}
+	\centering
+	\begin{subfigure}{.45\textwidth}
+		\centering		
+		\includegraphics[width=\textwidth]{figures/19_top_1_final.pdf}
+		\caption{\ac{map} values by evaluation strategy}
+		\label{fig:top_1_final}
+	\end{subfigure}%
+	\begin{subfigure}{.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/20_map_final.pdf}
+		\caption{\ac{p@1} values by evaluation strategy}
+		\label{fig:map_final}
+	\end{subfigure}
+	\caption{The figure depicts the peak performance for different datasets. In total 26 models have been trained, each on a unique dataset, introduced in \Cref{chap:Datasets}. The datasets are categorized by the metric which is used to select patches for the training procedure. As described in \Cref{sec:Experiments}, each dataset is evaluated on patch level and on fragment level. The three best results for each category are highlight by pointing out the dataset number.}
+	\label{fig:final}
+\end{figure}
+%
+The resulting \ac{p@1} values are visualized in \Cref{fig:top_1_final}. The x-axis denotes a dataset \Cref{chap:Datasets} and the y-axis shows the resulting \ac{p@1}-values (\Cref{sec:metrics}). The red line stands for patch-level results, and the blue line stands for fragment-level results. In general, the results for both levels look similar. Hence, if the \ac{p@1} is increasing on fragment level, it is also increasing on patch level and vice versa. As can be seen in \Cref{fig:top_1_final}, this statement is not true for all datasets. Furthermore, from the fourth dataset on, the \ac{p@1} value on the patch level is higher as compared to the \ac{p@1} at the fragment level. Another pattern is that if more of the fragments are processed throughout the learning process (increasing \(m\) and \(n\) values), the algorithms perform better.\\
+
+\noindent The resulting \ac{map} values are visualized in \Cref{fig:map_final}. The x-axis denotes a dataset, and the y-axis shows the resulting \ac{map}-values. The red line stands for the patch-level results, and the blue line stands for fragment-level results. The divergence between fragment level and patch level \ac{map} is noticeable bigger in comparison to the \ac{p@1} values. Also, the tendency that higher \(n\) and \(m\) values lead to increasingly better results are more clear in \Cref{fig:map_final}. A major distinction between the \ac{p@1} and \ac{map} results is their behavior on fragment and patch levels. On patch level, the \ac{p@1} values are usually higher as compared to the results on fragment level. For the \ac{map} this behavior changes such that the \ac{map} values on fragment level are higher in comparison to the results on patch level. By looking at \Cref{fig:map_final}, the best datasets for each argumentation type are as follows:
+%
+\begin{itemize}
+	\item \textbf{Dataset 7:} with name = baseline\_big\_big, \(n=20\) and \(m=256\)
+	\item \textbf{Dataset 14:} with name = mean\_medium\_bigger, \(n=20\) and \(m=256\)
+	\item \textbf{Dataset 25:} with name = text\_big\_big, \(n=20\) and \(m=256\)
+\end{itemize}
+%
+\noindent \Cref{fig:loss_comparision} compares different loss functions on fragment level by comparing the \ac{map} values. The comparison considers the triplet loss function (blue line) and the multi-similarity loss function (red line). The multi-similarity loss appears to be more consistent than the triple loss function, which has two to three times higher results. \Cref{fig:resnet_comparision} depicts the comparison between the DenseNet121 architecture (blue line) and the ResNet18 \ac{dnn} architecture (red line). In general, the DenseNet121 architecture performs constantly better than the ResNet18 architecture. Furthermore, the difference is more prominent when comparing the loss functions, as the values differ on average by about 10\%-points on average. \Cref{fig:loss_comparision} visualizes the comparison of the max-pooling layer (blue line) and a NetVLAD layer (red line). The more traditional max-pooling outperforms the \ac{netvlad} layer.\\
+
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}{.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/21_loss_comparision.png}
+		\caption{triplet loss vs multi-similarity loss}
+		\label{fig:loss_comparision}
+	\end{subfigure}%
+	\begin{subfigure}{.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/22_resnet_comparision.png}
+		\caption{ResNet18 vs. DenseNet121}
+		\label{fig:resnet_comparision}
+	\end{subfigure}
+	\begin{subfigure}{.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/23_netvlad_comparision.png}
+		\caption{max-pooling vs NetVLAD}
+		\label{fig:netvlad_comparision}	
+	\end{subfigure}
+	\caption{The figures visualize three comparisons. Each comparison evaluates the hypothesis claimed in \Cref{sec:Experiments}. Instead of performing statistical hypothesis tests the results are compared just side by side. The underlying assumption has been made, that if the margin between two results is visible the corresponding parameter outperforms the other parameter.}
+	\label{fig:hypothesis_testing}
+\end{figure}
+%
+\noindent The following evaluations are based on the results of dataset 7 which achieved the highest \ac{map} value among all datasets. \Cref{fig:performance} shows the top 11 suggestions (black) for the class with the highest \ac{map} in comparison to the class with the lowest \ac{map}. \Cref{fig:performance} visualizes also the query (red). As visualized in \Cref{fig:performance}, well performing fragments have approximately the same color and luminosity. Additionally, more accurately retrieved fragments look more fractured. In contrast, fragments corresponding to lower \ac{map} values, differ in their luminosity and color. Furthermore, the samples are not as fractured as compared correctly retrieved fragments.\\
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\textwidth]{figures/24_sample_peak_weak.pdf}
+	\caption{Samples who performed well and worse on the task of papyri fragment retrieval.}
+	\label{fig:performance}
+\end{figure} 
+%
+\noindent \Cref{fig:umap_train} and \Cref{fig:umap_val} visualize how the embeddings have changed while the algorithm is trained and validated. While training and validation, the algorithm shifts the embeddings more towards the center. As a result, the outcomes appear denser than before. While training, a clear tendency towards distinct clusters can be noticed. This tendency seems less clear compared to the embeddings in the validation. In both cases, there are still strong outliers. For example, the green class has a group of outliers on the bottom until epoch nine. These outliers are shifted around for a few epochs until they are incorporated into the bigger, greener cluster.\\  
+
+\begin{figure}
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\includegraphics[width=\textwidth]{figures/25_train_umaps.pdf}
+		\caption{training embeddings}
+		\label{fig:umap_train}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/26_val_umaps.pdf}
+		\caption{validation embeddings}
+		\label{fig:umap_val}
+	\end{subfigure}
+	\caption{The figure visualizes the evaluation of embeddings during training and validation. In both the embeddings are getting more dense after several epochs. This effect applies more within the training procedure as in the validation procedure. That observation corresponds to the observations made in \Cref{fig:final_map} and \Cref{fig:final_acc}.}
+	\label{fig:umap}
+\end{figure}
+%
+\noindent \Cref{fig:var_map} and \Cref{fig:var_acc} shows the results for different datasets based on the dataset 7 but with different random patches, as explained in \Cref{sec:Experiments}. It can be seen that the curves appear mostly constant. Thus, the algorithm performs constant even when different patches are selected. However, between the results from dataset 7.0 and dataset 7.1, there is a larger gap.
+%
+\begin{figure}
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/27_var_map.pdf}
+		\caption{Variance of \ac{map} values}
+		\label{fig:var_map}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\includegraphics[width=\textwidth]{figures/28_var_acc.pdf}
+		\caption{Variance of \ac{p@1} values}
+		\label{fig:var_acc}
+	\end{subfigure}
+	\caption{The figure shows how results are changing, if random patches are selected multiple times. In general the results are constant for the \ac{map} and \ac{p@1} values. From the first to the second iteration there is a relatively large gap.}
+	\label{fig:var}
+\end{figure}
+%
+\noindent \Cref{fig:final_map} and \Cref{fig:final_acc} visualize the training, validation and testing performance. The \ac{map} and \ac{p@1} curves evolve in the same way. Notably, the algorithm was retrained after the thesis was finished such that the test sub-dataset has not been used before. As can be seen on \Cref{fig:final_map} \Cref{fig:final_acc}, the algorithm converges and the performance is incrementally increasing. On the validation dataset, there is a performance gap in epoch seven and another gap on the training part in epoch nine. The gap observed while training the algorithm smaller than the gap in the validation phase. The test results are better compared to training and validation results.
+%
+\begin{figure}
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/29_final_map.pdf}
+		\caption{final \ac{map}}
+		\label{fig:final_map}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/30_final_acc.pdf}
+		\caption{final \ac{p@1}}
+		\label{fig:final_acc}
+	\end{subfigure}
+	\caption{The Figure shows the \ac{map} and \ac{p@1} after the work on the thesis has been ended. The parameters are chosen according to the hypothesis. Looking at \Cref{fig:final} it becomes clear that dataset 7 achieves the best results. Thus, a final model was created and evaluated on unseen data, to compare the results with state-of-the-art algorithms.}
+	\label{fig:test}
+\end{figure}
+%
+
+
+
+

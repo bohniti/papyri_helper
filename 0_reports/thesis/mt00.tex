@@ -1,0 +1,140 @@
+
+\documentclass[english,mt]{lmedoc}
+\def\MakeUppercaseUnsupportedInPdfStrings{\scshape}
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks,
+	linkcolor={blue!50!black},
+	citecolor={blue!50!black},
+	urlcolor={blue!80!black}
+}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[latin1]{inputenc}
+% ++ es werden keine underfull hboxes als Fehler ausgegeben,
+%    da das ja nur heißt, dass die Seite noch nicht ganz voll ist
+\hbadness=10000
+% Please add the following required packages to your document preamble:
+ \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+ \usepackage[normalem]{ulem}
+ \useunder{\uline}{\ul}{}
+\usepackage{lscape}
+\usepackage{booktabs}
+\usepackage[noabbrev,nameinlink]{cleveref}
+\includeonly{mt01, mt02, mt03, mt04, mt05, mt06, mt07, mt08, mt09, mt10, mt11, mt-lit, mt-lof, mt-lot}
+
+
+% ++ Packages for research questions environemnt
+\usepackage{enumitem}
+\newlist{questions}{enumerate}{2}
+\setlist[questions,1]{label=\bf{RQ\Roman*:},ref=RQ\Roman*}
+\setlist[questions,2]{label=(\alph*),ref=\thequestionsi(\alph*)}
+
+\usepackage{acronym}
+\usepackage{subcaption}
+\usepackage{caption}
+\captionsetup[figure]{font=small}
+%\usepackage{svg}
+
+\pagenumbering{roman}
+
+%\bibliographystyle{galpha1a} %german bibliography
+\bibliographystyle{alphamod} %english bibliography
+
+\begin{document}
+\clearpage
+  \begin{deckblatt}
+    \Titel{The influence of data augmentation
+    	on the success papyri fragment retrieval}
+    \Name{Bohnstedt}
+    \Vorname{Timo}
+    \Geburtsort{Gunzenhausen}
+    \Geburtsdatum{17.02.1992}
+    \Betreuer{Mathias Seuret M. Sc., Dr.-Ing. Vincent Christlein}
+    \Start{1.12.2021}
+    \Ende{1.06.2022}
+  \end{deckblatt}
+
+
+\cleardoublepage
+
+
+\noindent Ich versichere, dass ich die Arbeit ohne fremde Hilfe und ohne Benutzung
+anderer als der angegebenen Quellen angefertigt habe und dass die Arbeit
+in gleicher oder "ahnlicher Form noch keiner anderen Pr"ufungsbeh"orde
+vorgelegen hat und von dieser als Teil einer Pr"ufungsleistung
+angenommen wurde. Alle Ausf"uhrungen, die w"ortlich oder sinngem"a"s
+"ubernommen wurden, sind als solche gekennzeichnet.
+\\
+
+\noindent Die Richtlinien des Lehrstuhls f"ur Studien- und Diplomarbeiten
+habe ich gelesen und anerkannt, insbesondere die Regelung des
+Nutzungsrechts. \\[15mm]
+Erlangen, den \selectlanguage{german} \today \hspace{6.0cm} \\[10mm]
+
+\selectlanguage{english} %remove this line for german style
+
+\cleardoublepage
+
+
+\bfseries
+\noindent "Ubersicht\\
+
+\noindent Antike Papyri sind häufig in mehrere Fragmente zerrissen, und die Aufgabe der Papyrologen besteht darin, diese Fragmente zusammenzusetzen und zu entziffern. Einmal erfolgreich rekonstruiert, bietet antikes Papyrus die Möglichkeit, wichtige Informationen über vergangene Zeiten zu sammeln. Das Zusammensetzen von Hand ist jedoch zeitaufwändig, da sich die Fragmente in Farbe, Struktur und Form unterscheiden. Mit anderen Worten: Sie passen nicht perfekt zusammen
+- wie ein künstlich hergestelltes Spielzeugpuzzle. Ein Algorithmus, der eine Auswahl von passenden Fragmenten zu weiteren Fragmenten vorschlägt, spart Papyrologen viel Zeit. Hierfür wurde bereits in der Vergangenheit gezeigt, dass tiefes metrisches Lernen ein vielversprechender Ansatz ist \cite{Pirrone21}. In der nachfolgenden Arbeit wird gezeigt, dass eine geeignete Architektur mit bis zu einem \ac{p@1} von 85\% geeignete Kandidaten findet. Dies ist eine erhebliche Steigerung gegenüber bisherigen Algorithmen \cite{Pirrone21}. Für den Vergleich wurde zunächst ein Datenset erstellt, welches die gleichen Eigenschaften besitzt wie bisher verwendete Datensets.  Der Programmcode sowie die Rohdaten zum Generieren dieses Datensets sind öffentlich verfügbar, was anderen Wissenschaftlern die Möglichkeit geben soll, die Ergebnisse zu validieren und auf die Ergebnisse aufzubauen. Es konnte außerdem gezeigt werden, dass der Algorithmus die besten Ergebnisse liefert, wenn er anhand verschiedener Papyrus Charakteristiken lernt. Anstatt von Text oder Papyrus Strukturen scheint die Art und Weiße, wie das Fragment beschädigt wurde, beim erstellen von Modeln eine große Rolle zu spielen. Um die erhobenen Ergebnisse Papyrologen zugänglich zu machen, wurde eine Applikation entwickelt, welche es erlaubt, mittels generierter Modelle passende Fragmente innerhalb eines Datensets zu identifizieren.
+\normalfont
+
+
+
+\vspace{5.0cm}
+\cleardoublepage
+
+
+
+\bfseries
+\noindent Abstract\\
+
+\noindent Ancient papyri are frequently torn into several fragments, and the task of papyrologists is to assemble and decipher these fragments. Once successfully reconstructed, ancient papyrus offers the opportunity to gather crucial information about past times. However, reassembling by hand is time-consuming because fragments differ in color, structure, and shape. In other words, they do not fit together perfectly - like an artificially designed toy puzzle. An algorithm which suggests potential matching fragments for a query can save papyrologists plenty of time. In order to tackle the demand of such an algorithm, deep metric learning has proposed as an efficient framework for fragment retrieval algorithms\cite{Pirrone21}. In the following thesis, such an algorithm retrieves fragments with a \ac{p@1} of 85\%. The significant increase over previous algorithms was achieved by data argumentation, finding a suitable architecture and finding well working hyperparameters \cite{Pirrone21}. The algorithm produces the best results if distinct papyrus characteristics used to train a \ac{dml} model. This contradicts to the assumption from previous publications which state that text is more valuable compared to other characteristics. Instead the way in which the fragment was damaged is important for the learning success of \ac{dml} models. To that end a comparable dataset was created. The program code as well as the raw data used to generate this dataset are publicly available. The code allows other researchers to validate the results and to follow the guidance presented in \Cref{sec:futurework}. In order to make the results accessible to papyrologists, an application was developed that allows the retrieval of matching fragments within a dataset using generated models.
+\normalfont
+
+\cleardoublepage
+
+\tableofcontents
+
+\cleardoublepage \pagenumbering{arabic}
+
+\include{mt01}   % Einfuehrung (\chapter{Einf"uhrung})
+\cleardoublepage
+\include{mt02}   % (\chapter{})
+\cleardoublepage
+\include{mt03}   % (\chapter{})
+\cleardoublepage
+\include{mt04}   % (\chapter{})
+\cleardoublepage
+\include{mt05}   % (\chapter{})
+\cleardoublepage
+\include{mt06}   % (\chapter{})
+\cleardoublepage
+\include{mt07}   % Ausblick (\chapter{Ausblick} TEXT)
+\cleardoublepage
+\include{mt08}   % Zusammenfassung (\chapter{Zusammenfassung}  TEXT)
+\cleardoublepage
+
+\appendix
+\cleardoublepage
+\include{mt09}   % Glossar (\chapter{Glossar}  TEXT)
+\cleardoublepage
+\include{mt10}   % 
+\cleardoublepage
+\include{mt11}   % 
+\cleardoublepage
+
+\include{mt-lof} % Bilderverzeichnis
+\cleardoublepage
+\include{mt-lot} % Tabellenverzeichnis
+\cleardoublepage
+\include{mt-lit} % Literaturverzeichnis
+
+\end{document}

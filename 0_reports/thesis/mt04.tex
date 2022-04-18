@@ -1,0 +1,199 @@
+\chapter{Theory}
+\label{chap:theory}
+\Cref{chap:theory} describes the necessary theory to understand how \ac{dml} is used to retrieve papyrus fragments. Therefore, the fundamentals of \acp{ann} are presented in \Cref{sec:anns} and the fundamentals of \acp{cnn} are explained in \Cref{sec:cnns}. The material for the introduction is used from the lecture Deep Learning, hosted by the department for Pattern Recognition at the University of Erlangen-Nuremberg\footnote{The complete ''Deep Learning'' lecture is available on  \href{https://www.youtube.com/watch?v=p-_Stl0t3kU&list=PLpOGQvPCDQzvgpD3S0vTy7bJe2pf_yJFj}{YouTube} and the \textit{Data Science} blog \href{https://towardsdatascience.com/all-you-want-to-know-about-deep-learning-8d68dcffc258}{Towards Data Science}.}.   
+
+\section{Artificial neural networks}
+\label{sec:anns}
+\acp{ann} are computational models, consisting of multiple neuron layers, inspired by the human brain. The neurophysiologist Warren Sturgis McCulloch and the logician Walter Pits first mentioned that type of model. In their publication ''A logical calculus of the ideas immanent in nervous activity'', the scientists define a logical model inspired by the brain, for calculating complex decisions \cite{mcculloch43a}. Frank Rosenblatt took up this idea and invented the perceptron. Today, this model is the conceptual foundation for all kinds of \acp{ann} \cite{rosenblatt1958perceptron}.\\
+
+\subsection{Perceptron}
+\label{subsec:perceptron}
+\begin{figure}[t]
+	\includegraphics[width=\textwidth]{figures/10_perceptron.pdf}
+	\caption{Computation graph of a perceptron.}
+	\label{fig:perceptron}
+\end{figure}
+%
+\noindent The perceptron is a mathematical function that assigns a binary value \(\hat{y}\) to an input vector \(x\).
+The computation graph in \Cref{fig:perceptron} visualizes the Perceptrons functionality. As shown in the weights part of the figure, each input value \(x_i ... x_n\) will be multiplied with an adjustable weighting term \(w_i ... w_n\). Afterwards and as depict in the sum part the \(z\)-values are summarized by taking the product of \(z_i ... z_n\). As described in the threshold part of \Cref{fig:perceptron}, the result is evaluated on a threshold. Finally the output part explains that if the resulting sum exceeds the threshold, the function returns one, otherwise, it returns zero.\\
+
+\noindent While training, the algorithm adjusts \(w\) to compute the desired output. Since the ability of learning suitable weights is some form of learning, the perceptron is regarded as a simple form of artificial intelligence. Given multiple input vectors \(x\) (inputs) and corresponding output values \(y\) (samples), the objective of a trained perceptron is that it returns \(\hat{y} = y\). Instead of explicit programming, the weights are randomly initialized and then iteratively adjusted as long as the algorithm converges. Convergence means, the difference \(\hat{y} - y\) (loss) does not change significantly anymore because it has reached a local optimum. For instance, if the input is a value \(x \in \mathbb{Z}\) the perceptron return \(1\) if \(x > 0\). In the training procedure the learns to approximate the underlying function, by increasing the weights if  \(x \cdot w - b < 0 \) or decreasing the weights if \(x \cdot w - b > 0 \). The mathematical definition of this function is given by the following expression, where the subscript \(i\) stands for an entity in \(x\):
+%
+\begin{equation}
+	\hat{y} = \left\{\begin{array}{lr}
+		1 & \text{for } \sum x_i w_i > threshold\\
+		0 & \text{for } \sum x_i w_i \le threshold\\
+	\end{array}\right\}
+\end{equation}
+%
+\noindent The given expression can not be directly implemented. The expression can be simplified by replacing the sum terms with a dot product and introducing a bias term \(b= - threshold\): 
+%
+\begin{equation}
+	\hat{y} = \left\{\begin{array}{lr}
+		1 & \text{for } w \cdot x - b > 0\\
+		0 & \text{otherwise}\\
+	\end{array}\right\}
+\end{equation}
+%
+\noindent On one hand, the perceptron finds correct weights to obtain the logical operations AND, OR, and NOT. On the other hand, the perceptron can only determine heuristics for functions in which the output is linearly separable. That is not the case for the logical XOR function. Thus, a perceptron can not find correct weights such that the output is identical to the XOR function (XOR-problem). If a smoother function (activation function) is applied to the weighted sum of \(x \cdot w\), data must no longer be linearly separable. Thus, the XOR problem is solvable. This generalized form of the perceptron is called unit or neuron. An example of an activation function is the \ac{relu} or the sigmoid function. The sigmoid function can scale the output values between 0 and 1. That makes the function interpretable as an output probability for classification tasks. Furthermore, an activation function ensures that the neuron is differentiable. Without differentiable neurons, training algorithms such as gradient descent do not work.  
+%
+\subsection{Deep neural networks}
+\Cref{fig:MLP} shows a so-called multi-layer perceptron or \ac{nn}. That type of network consists of an input-layer (left-hand side), multiple hidden-layer (middle part), and an output-layer (right-hand side). The input-layer does not perform any calculation, whereas the hidden layers and the output layer combine multiple neurons. If more than three hidden-layers are used, the network is considered as a \ac{dnn}. The number of input neurons is equal to the size of the input vector, and the number of neurons in the output layer corresponds to the performed task. For instance, if the \ac{dnn} is used to classify papyri fragments, then the number of input neurons is equal to the number of pixels times 3 (each for one color channel). The number of output neurons is equal to the number of distinct types of papyri (classes).\\
+
+\begin{figure}[t]
+	\includegraphics[width=\textwidth]{figures/11_multi_layer_perceptron.pdf}
+	\caption{Architecture of a fully connected \ac{dnn}.}
+	\label{fig:MLP}
+\end{figure}
+%
+\noindent As visualized in \Cref{fig:MLP}, each neuron is connected to any other neuron (fully connected). That property allows the fully connected \ac{nn} to approximate arbitrary function and hence to become universal function approximator. These networks can not be trained in the same manner as a perceptron. Instead, the backpropagation algorithm is used to obtain suitable weights iteratively \cite{Rumelhart86}. The algorithm propagates the loss backwards through the \ac{dnn} to obtain gradients of the loss function. The gradient of a function is its change rate, pointing in the direction of the steepest ascent. For the calculation of gradients, a differentiable activation function is obligatory. Thus, the optimization via the backpropagation algorithm will not work (\Cref{subsec:perceptron}).
+%
+\subsection{Terminology}
+Domain-specific terminology is often used to describe the characteristics of a \ac{dnn} (architecture) and to discuss their results. The following list will enable the reader to understand the explanations and discussions regarding \acp{dnn} used within this thesis:
+%
+\begin{enumerate}
+	\item The term \textbf{architecture} refers to the number of neurons and layers which is used during the training. Furthermore, the architecture describes the types of neurons and layers used. As described in \Cref{sec:cnns}, fully connected \ac{nn} are just one type of \acp{dnn}. In recent years many distinct architectures have been introduced. The architectures are usually highly specialized for a specific field such as \ac{cv} tasks. For instance the ResNet19 or the DenseNet121 architectures. These architectures are also used within this thesis and described in \Cref{subsec:drl} and \Cref{subsec:dcn}.
+	\item The \textbf{cost function} and the \textbf{loss function} are functions to determine the performance of a \ac{dnn}. For instance, the binary triplet loss (\Cref{sec:dml}). The terms cost function and loss function almost refer to the same meaning. A loss function mainly applies for a single training sample whereas the cost function is the average of multiple loss functions, evaluated on batches of outputs.
+	\item The \textbf{optimizer} is an optimization algorithm that iteratively minimizes the cost function by adjusting the weights. There are many different optimizers, but almost all algorithms share the fundamental principle of gradient descent.
+	\item \textit{Overfitting} means that a \ac{dnn} rather absorbs and stores the information presented as it was shown via examples instead of learning domain-specific characteristics (features) such that the model performs well on unseen data. 
+\end{enumerate}
+%
+\section{Convolutional neural networks}
+\label{sec:cnns}
+\acp{cnn} are also inspired by biology and mimic the visual cortex, in which neurons act as receptive fields, and turn active when specific patterns appear. For instance, some neurons turn active if an edge appears, and other neurons are more sensitive to complex patterns such as the human eye. Neurologists agree that the fundamental principle of how the brain works is still unknown \cite{Savage19}. Thus, \acp{cnn} and \acp{dnn} are not accurate models of the biological brain.\\
+
+\begin{figure}
+	\label{fig:convs}
+	\includegraphics[width=\textwidth]{figures/12_convolution_operation.pdf}
+	\caption{Convolution explained in three layers of abstraction.}
+\end{figure}
+%
+\noindent However, in 1989, LeCun et al. applied a \ac{cnn} to the task of handwritten digit recognition \cite{lecun-90c} and achieved outstanding results. As a result, \acp{cnn} gained on popularity. Finally, Kizhevsky et al. have presented a \ac{cnn} which outperformed any other model on the \ac{imagenet} dataset. That dataset was published along with a challenge and is used to create benchmarks for object classification tasks. The \ac{imagenet} dataset consists of hundreds of object categories and millions of images \cite{ILSVRC15}. Since AlexNet won the challenge, \acp{cnn} become the state-of-the-art architecture in the field of \ac{cv} \cite{Schmidhuber15}. In their publication, Kizhevsky and his colleagues predicted that if \ac{gpu} power is increasing, future architectures will achieve outstanding results in many distinct \ac{cv} domains \cite{NIPS2012_c399862d}.\\
+
+\noindent The fundamental component of a \ac{cnn} is the convolution layer. It slides a kernel (filter) multiple times across the input to detect specific features. \Cref{fig:convs} visualizes the convolution operation on three levels of abstraction. In the bottom row, the convolution is presented in form of linear algebra. Linear algebra provides the first steps into vectorization, presenting a deeper way of thinking about parallelization. Machine learning models such as linear regression use these techniques to determine heuristics in a sufficient time. In the middle part of \Cref{fig:convs}, the inputs and outputs of such operations are visualized. On the left-hand side, a fragment is separated into squares to visualize that the algorithm summarizes the information from these squares. It is not necessarily the case that the filter is applied on non-overlapping squares. Instead, it can be moved across the image in every arbitrary format. The middle part of the figure shows a filter which summarizes the information given by each square. The right hand side of the image depicts the result. It only shows the edges of the original image. Thus it the filter, removes each feature which does not contain information about edges. That result is called a feature map, since it maps the important features from an input tensor onto an output tensor. In the first row, the mathematical symbol representations are presented. Given the mathematical symbol representation, a convolution is mathematically defined as follows:
+\begin{equation}
+	(f \ast g) (x) = \int_{-\infty}^{\infty} f(\tau)g(x-\tau)d\tau
+\end{equation}
+\noindent where
+\begin{itemize}
+	\item \(f \ast g\) means to convolve (\(\ast\)) a kernel \(f\) with an input signal \(g\) at position \(x\)
+	\item \(-\tau\) means flipping the signal,
+	\item \(x\) stands for moving to the desired position , 
+	\item and \(\int_{-\infty}^{\infty}\) stands for accumulating every interaction 
+\end{itemize}
+\noindent Each filter has adjustable weights and performs a convolution operation to make specific features visible in the feature maps. Therefore, the training of a \ac{cnn} works as follows:
+\begin{itemize}
+	\item A \ac{cnn} adjusts weights of small filters such that they become feature detectors.
+	\item These feature detectors are applied across the input such that it scans small patches of the input for these features. 
+	\item This operation is subsequently applied multiple times such that the network learns to detect low-level features (e.g., edges) in the first layers and features of features (e.g., a letter on a papyri image) in deeper hidden layers.
+	\item Pooling is used to summarize the information stored in the filters and decrease the network's size. Pooling works again by sliding a filter across the feature maps. In contrast to the filters in the convolution layers, these filters do not have adjustable weights. There are different variations of pooling, such as max-pooling or average pooling. For example, max-pooling uses filters to retain the maximum value of an area. 
+\end{itemize}
+The authors of the first \acp{cnn} already assumed that not every layer is useful in some tasks. Hence, it is more efficient to skip layers instead of optimizing them. That assumption leads to deep residual networks. 
+%
+\subsection{Deep residual learning}
+\label{subsec:drl}
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=100mm]{figures/13_residual_improve_performance.png}
+	\caption{Training error (left) and test error (right) on CIFAR10 with 20 layers and 56 layer plain networks \cite{He15}.}
+	\label{fig:modelperformance}
+\end{figure}
+%
+\noindent Adding more layers (filters) leads to an increase in performance, but at some point, the improvement saturates. Kaiming et al. proved that overfitting does not cause this saturation because the performance also saturates in the training procedure. Hence, the full potential of deeper networks is not completely used \cite{He15}. \Cref{fig:modelperformance} shows an example of a 20 layer network with a lower training and test error as the architecture with 56 layers. To solve a more complex problem, researchers applied more and more layers in. The intuition behind their approach is that these layers progressively learn more complex functions. This problem of training very deep \acp{dnn} has been alleviated with the introduction of the ResNet architecture, short for Residual Networks. It is a specific type of \acp{dnn} that was introduced in 2015 by Kaiming He et al. in their paper ''Deep Residual Learning for Image Recognition'' \cite{He15}. ResNets consist of residual blocks, as presented in \Cref{fig:residual}. Compared to earlier \ac{cnn} architectures, there is a direct connection that skips some layers in between. This connection is called skip connection and it solves the vanishing gradients in \acp{dnn} because the skip connection allows the gradient to flow through. In a \ac{dnn}, the vanishing gradient problem is encountered when training \acp{ann} with gradient-based the backpropagation algorithm. During each iteration of training each of the \ac{nn}'s weights receives an update proportional to the partial derivative of the error function with respect to the current weight. Sometimes the gradient will be vanishingly small. Thus the update and therefore the learning effect is vanishingly small as well. This can completely stop the \ac{nn} from further training. Skip connections allow to learn identity functions, ensuring that the higher layer will perform at least as good as the lower layer. For instance, a \ac{dnn} with \(n\) layers, in which the output of a layer \(y_n\) is given by the function \(y_n = H(y_n - 1)\). In that case, a skip connection's mathematical definition means adding the identity function to enable the network to bypass one or multiple layers. If the identity path skips only one layer, the mathematical definition is as follows:
+\begin{equation}
+	x_l = H(x_{l-1}) + x_{n-1} \approx F(x_{l-1})
+	\label{equ:skip}
+\end{equation}
+where 
+\begin{equation}
+	H(y_{n -1}) \approx F(x_{n-1}) - x_{l-1}
+\end{equation}
+\noindent Adding skip connections does not increase the number of parameters and does not increase the computational complexity of a \ac{dnn} architecture. He et al. showed that \acp{dnn} benefit from the skip connections and argued that this is due to the better preconditioning of the optimization problem. The authors proved that the residual functions of a \ac{dnn} are not as activated as functions in other \acp{dnn} architectures. They stated that the loss function of the weight layers are closer to the identity function in comparison to a zero-mapping. He et al. concluded that this observation causes the improved optimization behavior. So to speak, in a deep residual network, it is safe to train very deep layers in order to get enough learning power. In the case of a degenerated performance, layers can learn to be an identity function and do no harm to performance.
+%
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=50mm]{figures/14_residual_block.png}
+	\caption{The skip connections as main building block of residual learning \cite{He15}.}
+	\label{fig:residual}
+\end{figure} 
+%
+\subsection{Densely connected networks}
+\label{subsec:dcn}
+Densely connected networks further exploit the application of skip connections. Inspired by ResNets, Huang Gao et al. invented a network architecture where each layer has a skip connection to every other layer \cite{Huang17}. In ResNets, the identity function and the output of certain layers are combined by the summation of the output and the identity function. Gao et al. changed that behavior such that the input of the subsequent layer includes the input of the preceding layers. Each layer has access to the feature maps of all preceding layers. A concatenation term is used instead of the summation as presented in \Cref{equ:skip}. That changes the expression as follows:
+\begin{equation}
+	\label{equ:skip2}
+	x_l = H([x_{0},x_{1},...,x_{l-1}]) \approx F(x_{l-1})
+\end{equation}
+So to speak, instead of only learning an identity mapping, the algorithm has a direct connection to every result achieved in higher layers. \Cref{fig:dense} visualizes the architecture of a densely connected network. The authors cite that their architecture beats the results of the other competing architectures, such as ResNet in experiments on the \ac{imagenet} challenge. That statement will be evaluated on the the papyri datasets which have been introduced along this thesis in  \Cref{sec:Experiments}. 
+
+\section{Deep metric learning}
+\label{sec:dml}
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\textwidth]{figures/15_metric_learning_dark_mode.pdf}
+	\caption{\textit{Metric Learning} for papyri fragment retrieval.}
+	\label{fig:FigureML}
+\end{figure} 
+%
+\ac{dml} is a technique to quantify similarities and dissimilarities between classes. For instance, it determines the equality of two papyrus fragments by an output value, expressed by a distance metric. Considering the topic of this thesis, the algorithm embeds the papyrus fragments into another dimension, such that the embeddings become separable. Precisely, embeddings from the same papyrus document shall appear rather close to each other and vise versa, embeddings from distinct papyri shall appear wide apart.\\
+
+\noindent That desired behavior of an metric learning algorithm is visualized in \Cref{fig:FigureML}. On the left-hand side, two distinct papyri consist of two fragments. The center of \Cref{fig:FigureML} is a visualization of four embeddings created by an untrained \ac{dml}. The green embeddings in light and dark green represent Papyri A, and the light and dark brown embeddings represent Papyri B. If the model is not trained, the embeddings mostly do not group at all. After training, the green and brown embeddings will group, and the total distance between green and brown values increases, as can be seen on the right-hand side of \Cref{fig:FigureML}. \\
+
+\noindent Recently, \ac{dl} has proven to be an effective end-to-end approach for building metric learning algorithms. End-to-end in this context means that the transformation from the input feature space to a useful embedding space and the discrimination of that space is realized through one process. If \ac{dl} and metric learning are applied together, researchers use the term \ac{dml}. A loss function is applied such that the model serves as a feature extractor and feature discriminator at the same time. By using that approach, researchers achieved competitive results in certain research fields such as facial recognition and image classification \cite{Duan18, Dai18, Kim_2018_ECCV}. Moreover, \ac{dml} was successfully applied to the task of papyrus fragment retrieval (\Cref{chap:Foundation}, \Cref{sec:stateArt}).\\
+
+\noindent In comparison to traditional \ac{dl} techniques such as \acp{cnn}, \ac{dml} has a stronger ability to cover input characteristics. That is one of the reasons why \ac{dml} is thriving on tasks in which it is important to distinguish between small characteristics. Another strength of \ac{dml} is its ability to compute robust classifiers if the number of classes is high \cite{Schroff15, Rippel16}. 
+
+\subsection{Triplet loss function}
+\label{subsec:tripletloss}
+Triplet loss is used to guide the optimizer such that the distance between negative and anchor embeddings increases and the distance between anchor embeddings and positive embeddings decreases \cite{Schroff15}. Mathematically this can be expressed as follows: 
+\begin{equation}
+	\label{equ:pairs}
+	L_i = max(\{\alpha + D(y_{a}^{i},y_{p}^{i})^2 - D(y_{a}^{i},y_{n}^{i})^2\})
+\end{equation}
+where
+\begin{itemize}
+	\item \(superscript-i\) denotes the currently mined triplet,
+	\item \(D\) is a distance function such as the euclidean distance between two embeddings,
+	\item \(a\),\(p\) and \(n\) represents the anchor, positive and negative pair embeddings within each triplet. 
+\end{itemize}
+The \(max\) operator is used since embeddings are multi-dimensional, and only the dimension with the highest distance is used. Further, the margin \(\alpha\) is adapted from \acp{svm} and is used to separate the distinct input classes. \Cref{fig:loss} visualizes that loss function on a conceptual level in the example of papyri fragment retrieval. Three distinct inputs are passed to the loss function from left to right. These inputs represent an anchor, a sample from the same papyri (positive), or a sample from another papyri (negative). The arrows between the \acp{cnn} symbolize that the network is trained individually. Nevertheless, the weights are shared even if the model is trained individually. So to speak, the right-hand part of \Cref{fig:loss} is the equivalent of the right-hand part of \Cref{fig:FigureML}. Instead of presenting the objective of a \ac{dml} algorithm on the embedding level, it shows the objective by the example of one sample. 
+%
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\textwidth]{figures/16_triplet_loss_function.png}
+	\caption{Visualization of the triplet loss.}
+	\label{fig:loss}
+\end{figure} 
+%
+%
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\textwidth]{figures/17_architecture_densenet121.png}
+	\caption{The architecture of a densely connected network in which each layer takes all preceding feature-maps as input \cite{Huang17}.}
+	\label{fig:dense}
+\end{figure} 
+%
+\subsection{Multi-similarity loss function}
+The triplet loss guides the optimizer in a way that the input values become separable. The multi-similarity loss builds on top and aims for a higher performance by introducing multiple similarity types. Firstly, the cosine similarity between the negative/ positive sample and the anchor. Notably, that similarity type is also evaluated by the triplet loss function. Secondly, the relative similarity between the negative and positive sample. Lastly, the relative similarity between the positive/ negative sample compared to the positive/ negative samples in the same batch. Thus, the multi-similarity loss computes all three types of similarity and incorporates the distances into the final loss. According to Wang et al. this suggests that the algorithm becomes more robust against outlying features \cite{wang19}.  
+%
+\subsection{Mining}
+The loss functions that has been used within the thesis operate on triplets, consisting of three distinct types of fragments. Firstly, a query fragment. Secondly a fragment from the same papyri in that sense a positive sample. Lastly, a negative sample in which the fragment does not belong to the same papyri as the query. Considering the datasets derived for that thesis, it is not feasible to create all possible triplets because the total number grows exponentially with the number of classes. If the  dataset consists of \(F\) fragments, \(N\) distinct papyri, \(n\) fragments per class, and \(i\) samples per class, then the number of all pairs can be derived as follows \cite{Schroff15}:
+\begin{equation}
+	\label{equ:pairs}
+	\sum_{i}^{N} \frac{i(i-1)}{2} + \sum_{i}^{N} (F-i)i
+\end{equation}
+In the equation the first term represents all positive and the second term all negative pairs. For instance, the first dataset introduced in \Cref{tab:datasets}. Here \(F=7,211 \), \(N=422\) and \(n\approx4\). As a result there are more more than 100 million pairs.\\ 
+
+\noindent Instead of using all possible pairs, the state-of-the-art is to optimize the \ac{dml} model only with a subset of all possible pairs (mining) \cite{Schroff15}. First, it significantly reduces the number of computations, and second, it serves as a filter such that less meaningful pairs do not hinder the optimization process. In general, pairs are categorized into easy and hard pairs. A positive pair is considered easy if the two images belong to the same class and their features are nearly identical. Analogously a positive pair is considered as hard if the two images belong to the same papyri, but their features differ greatly. For negative pairs, it is the other way around. Hence, easy negative pairs are easy to distinguish, and hard negative pairs are from different papyri but look similar.\\
+
+\noindent To determine useful fragments, a margin defines some degree to which the fragments have to differ. The function used within this thesis differentiates between four different mining strategies:
+%
+\begin{enumerate}
+	\item \textbf{All:} Select all triplets which are greater than the specified margin.
+	\item \textbf{Hard:} Select all triplets which are greater than the specified margin, and the negative is closer to the anchor than the positive.
+	\item \textbf{Semihard:} Select all triplets which are greater than the specified margin, and the negative is further apart from the anchor than the positive.
+	\item \textbf{Easy:} Select all triplets in which the difference is smaller than the margin.
+\end{enumerate}
+%
+\subsection{NetVLAD}
+A \ac{netvlad} is a \ac{dl} layer inspired by encoded deep convolutional features which is a feature quantization technique. The \ac{netvlad} offers a powerful pooling mechanism with learnable parameters. Since all of the functions in the \ac{netvlad} are differentiable, it can easily be used within an existing \ac{dnn} architecture. It was proven by a couple of experiments that NetVLAD outperformed transnational max-pooling in fragment retrieval tasks \cite{Arandjelovic15}. 

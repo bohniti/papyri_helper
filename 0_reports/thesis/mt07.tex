@@ -1,0 +1,32 @@
+\chapter{Fragment retrieval application}
+\label{chap:application}
+
+This chapter shows the demand for an end-user application. Furthermore, the theory behind that application is discussed, and the functionalities of the fragment retrieval application are explained by using an example scenario. 
+
+\section{Importance of end-user friendly applications}
+\label{sec:importance}
+As shown within the evaluation and proved by other researchers before \ac{dml} models are a promising technique for papyri fragment retrieval. A problem arises if this technique shall be used in a realistic scenario. Creating these \ac{dl} models requires an advanced understanding of \ac{cv}, \acp{ann} and in particular \acp{dnn}. That also applies to obtaining predictions inferences on trained models. In addition to that, people who have that kind of knowledge lack on necessary domain knowledge for interpreting the obtained results.
+Another problem is the necessary computational effort that has to be done before an expert can use the algorithm. For instance, the \Cref{chap:dml} algorithm, which has been used for papyrus fragment retrieval, requires 4 hours on average to train predictive models. The author suggests using an end-user application to tackle these challenges. The application will be designed by the requirements of domain experts and implemented along with this thesis. Thus, the calculated models can be evaluated for their usefulness by papyrologists. If the algorithms do not fit the requirements, the models can be improved in an iterative process by applying both engineering and domain knowledge. 
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\textwidth]{figures/31_application.png}
+	\caption{Comparison between the Triplet Loss Function and the Multi Similarity Loss Function.}
+	\label{fig:application}
+\end{figure} 
+
+
+\section{Implementation Details}
+\label{sec:implementation}
+The application consists of three parts. The main part is used to generate the browser-based application with the help of Streamlit. In the backend part, a \ac{knn} is trained on a reference dataset. Once the dataset is stored as a file, a query can be solved within minutes. Additional code for such as the PyTorch dataset is implemented in different files. The backend takes great advantage of \ac{pml} and PyTorch library. The code is optimized to run on a CPU (Mac Book Pro, 2,4 GHz 8-Core Intel Core i9). Even though the training of the \ac{knn} model takes 3 hours, the model can share across different personal computers without the requirement of huge computational resources.
+
+\section{Functionality}
+The functionality of the provided software has the objective to fulfill the needs of papyrologists, as has been described in \Cref{sec:importance}. The software can be used if a papyri fragment expert tries to reasonable papyrus data. The expert has to find a few unknown numbers of papyrus fragments out of several hundred samples. In that scenario, the papyrologist uses the tool as follows: 
+\begin{enumerate}
+	\item The papyrologist has a papyrus of interest with a distinct papyri ID. 
+	\item The papyrologist chooses that class first, and the application returns all fragments already labeled as being from the same papyri.  	
+	\item The papyrologist decides on one fragment out of all fragments with the same ID. That sample is now the query sample, and the algorithm depicts all \(k\) nearest fragments. Not that unnecessary that the model was trained on the whole dataset with all samples. That would be an unrealistic constraint because inference does not need any predictive model if the whole dataset is already labeled. 
+	\item \(k\) is also a parameter that the papyrologist can specify. 
+	\item The percentage value specifies how far the distance is regarding all distances of all possible results. 
+\end{enumerate}
+\Cref{fig:application} depicts the user interface once the app is started. On the sidebar, the user can change the parameters. First, the user can select one out of all distinct papyri IDs already in one of the datasets used within the application. In the Figure, the selected class shows in fragments. For example, the papyrologist knows that the set is incomplete and that the missing fragment must be close to fragment number two. That means he specifies the parameter and will receive at least ten nearest neighbors. Further, he knows that the dataset is huge, so he is also adjusting \(k\) to filter out the samples far from the immediate solution. That procedure minimizes the chance that fragments can not be found because they are far apart from the anchor but not as far as true outliers.

@@ -1,0 +1,190 @@
+\chapter{Datasets for papyrus fragment retrieval}
+\label{chap:Datasets}
+%Short Intro what I do here
+
+The following chapter describes how the raw data was processed to obtain different training, validation, and test subsets. First, it is clarified where the raw data comes from and why this reference was chosen. Then the individual processing steps are explained. 
+
+\section{Collecting raw papyri data}
+All data used in this thesis comes from the Advanced Papyrological Information System (APIS), provided hosted by the University of Michigan. APIS is a digitized version of the university's papyrus collection. Users can retrieve high-resolution digital images and detailed catalog records on papyrus characteristics, corrections to published papyri, and republications.
+The information system and the resulting datasets were used several times in the field of \ac{cv} for cultural heritage \cite{Pirrone21, Ostertag21}. The information systems papyri-data is also used in the following thesis to compute comparable results. A simple but efficient bash script was used to retrieve the raw data.
+ 
+
+\section{Analyzing raw papyri data}
+After running the script, 8,857 papyrus documents (11.3 GB) are available. \Cref{fig:papyri_sample} shows an example of the downloaded images. As shown in the example, 96\% of the raw image data has a ruler and a color scale. That is useful for resembling papyri fragments manually. These tools are also used in computer vision, for instance, to calculate the original size of the images. That is useful because the image size often varies significantly. For example, the height of the images ranges from 789 pixels to 22,952 pixels and the width from 873 to 18,440 pixels. In \Cref{fig:distribution_image_size}, it can be seen that on the one hand, the maximum pixel values are outliers. On the other hand, it can be seen that the variance is significantly higher in comparison to standardized equally sized datasets like the cifar1000. Cifar1000 is a benchmark dataset that is oftentimes used to train machine learning and \ac{cv} algorithms and it is widely used. Since the vast difference in size was approached differently during the work for that thesis, the information given by the ruler was not used. The details of that approach are described in \Cref{sec:fragmentation}. 
+
+\begin{figure}[t]
+	\includegraphics[width=\textwidth]{figures/1_distribution_size.png}
+	\caption{Distribution of image sizes (pixels) along the vertical and horizontal axis within the raw image data.}
+	\label{fig:distribution_image_size}
+\end{figure}
+
+\section{Decomposition of raw papyri data into natural fragments}
+\label{sec:deseperation}
+In order to obtain a realistic evaluation, the final subsets should contain as many natural fragments as possible. In the raw dataset, 63\% of all images include multiple papyri fragments. Thus, the first objective of the preprocessing is to separate the raw data such that each image only shows a single papyri fragment. Furthermore, the ruler and the color scale are no longer helpful for creating predictions. In conclusion, they must be removed. Figure \ref{fig:papyri_preprocessing} shows the process from a raw papyri image towards the separated natural fragments. The main idea is to binarize the image with a histogram. White pixels correspond to the papyri fragment, and black pixels are the background. Then, bounding boxes are used to label the region around each fragment such that it is possible to separate them.\\
+
+\begin{figure}[t]
+	\includegraphics[width=\textwidth]{figures/2_papyri_preprocessing.pdf}
+	\caption{Preprocessing pipeline examined on the image \text{12830\_4433LR}.}
+	\label{fig:papyri_preprocessing}
+\end{figure}
+
+\noindent Noise in the images decrease the binarization quality and therefore makes it harder to find a good-fitting bounding box. A \textit{Gaussian Filter} with a blurry factor of $\sigma=95$ reduced the image noise and makes the algorithms more stable. At the same time sticking out fibers are not blurred out. After the image has been denoised, a histogram is used to find a suitable binarization decision boundary. For papyri data, it seemed reasonable to choose 86\% intensity as a threshold. That means pixels higher than 86\% intensity will be classified as background, whereas pixels with a lower intensity will be recognized as papyri. In the upper right part of Figure \ref{fig:papyri_preprocessing}, the images still contain the color scale and the ruler, which are usually identified as a papyri fragment. These two interfering objects must be removed before suitable bounding boxes can be found. An algorithm slices the image around these edges where so-called objects were found. An object is defined as a contiguous pixel set with specified size (buffer). The pixels of an object must belong together but have no connection to other objects in the image, such that natural fragments will not be removed. In the next step, convex hulls are calculated. The convex hull of a set of pixels is defined as the smallest convex polygon encloses all of the points in the set. Additionally, a mask is needed because the hull is just a line-shaped boundary that encloses the corresponding pixels. The following approach was applied on each image to create the convex hull masks: 
+
+\begin{enumerate}
+	\item Compute the x- and y-coordinates for all points along the center of each edge of each foreground pixel.
+	\item Use the quickhull-algorithm to compute the convex hull of the identified points from step 1. 
+	\item Use the convex hull computed in step 2 to convert the convex hull to a binary image mask.
+\end{enumerate}
+
+\noindent The name of the quickhull algorithm comes from quicksort, which was the inspiration for the developers as they designed it \cite{Barber96}. Quickhall and quicksort share the divide and conquer algorithm design paradigm. That means the algorithms recursively subdivide the problem into sub-problems until these become simple enough to be solved. Since the principle ensures efficient algorithms, it is used for many computer science-related problems such as sorting (quicksort-algorithm), computing the discrete Fourier transform (FFT-algorithm), or in the case of the thesis computing the convex hull (quickhull-algorithm). The algorithm will process as follows to find the convex hull of the papyri fragments: 
+\begin{enumerate}
+	\item The points on the outer ages of the x-dimension got identified. These points form a line to divide the two pixels into two subsets. The recursion will then process each subset individually.
+	\item A point is identified with the highest distance to the line. That particular point forms a triangle between the point itself and the points who are on that line. The points enclosed by the triangle are not part of the convex hull - therefore, they are no longer used in the next recursing steps. 
+	\item As long as points are left, the recursion will be repeated for both new sides of the triangle. 
+\end{enumerate}
+
+\noindent Figure \ref{fig:convex_hull} visualizes the procedure of finding bounding boxes. In the penultimate step, all objects are classified individually. It is essential to define the minimum size of the objects because, in the previous step, convex hulls may have been formed around tiny objects. Finally, each labeled object is stored as a single fragment. The objects are filled with a white background to obtain a rectangular or square shape. How the data looks after the preprocessing steps were applied onto the raw data, can be seen in Figure \ref{fig:sample_grid}.
+
+\begin{figure}[t]
+	\label{fig:convex_hull}
+	\includegraphics[width=\textwidth]{figures/3_convex_hull.pdf}
+	\caption{The convex hull algorithm for finding the bounding boxes.}
+\end{figure}
+
+
+\section{Computing train, test and validation subsets}
+\label{sec:trainTestSplit}
+
+It is considered best practice to divide the available data into different subsets for training, testing, and evaluating generated models. Even this best practice has some weaknesses, it is still considered the gold standard in machine learning \cite{Tan21}. It is also vital not to use the test data until the modeling is finished. The evaluation of data science projects refers to the results that the best model combined with the unseen data has achieved. Since, in real-world applications, data is also unseen, that practice ensures higher reliability. However, that procedure was done twice this master thesis due to an implementation error. Since the first iteration results are not evaluated or discussed anymore, the best-practice-paradigm is still fulfilled.\\
+
+\noindent The distribution must be as close to the original as possible to split the data right. Additionally, the distribution must be close to a related domain-specific dataset. Otherwise, a comparison is difficult since improvements are caused by different distributions instead of more sophisticated methods. The Michigan Dataset mentioned in \Cref{sec:stateArt}) is used as a reference dataset within the following thesis. On average, it has four fragments per papyri. The dataset created during the thesis has similar values. Precisely the training set has 3.51, the validation set has 3.45, and the test subset 7.52 fragments per papyri. Both the Michigan and FAU test datasets consist of 100 papyri, but the number of papyri in the validation and training datasets are different.\\ 
+
+\begin{figure}[t]
+	\includegraphics[width=\textwidth]{figures/4_distribution_datasets.png}
+	\caption{Distribution of the number of fragments per papyri on the train, test and unused subsets.}
+	\label{fig:HistogramTrainTestValSplit}
+\end{figure}
+
+\noindent The Michigan dataset contains 1,000 papyri to train models and 100 papyri to validate models. In contrast, the FAU dataset consists of  422 papyri for training and 422 papyri for validation. Thus, models in the following thesis are trained on fewer examples but tested on more examples. The software architecture which has been implemented did not allow different numbers of papyri during training and validation. Moreover, it was easier to evaluate the model's performance if the number of papyri is identical, at least in the training and validation phase. \\
+
+\noindent After all natural fragments have been separated into unique images, the distribution of that data had two noticeable characteristics. First, there are positive and negative outliers in the number of fragments per papyrus. Second, many papyri are not fragmented. The FAU dataset shall represent a real-world dataset. So, there are no artificially created fragments in any of the datasets. Instead, classes with only one fragment per papyrus, and classes with more than 60 fragments per papyri are removed. The result is a somewhat smoothed distribution. The following algorithm was applied to create a subset for training, validation, and testing:
+
+\begin{enumerate}
+	\item Order the classes according to the number of fragments of papyri. 
+	\item Alternately add a class to the test, training, or validation subset until there are 100 classes in the test subset. 
+	\item Repeat the procedure with the remaining classes only on the training and validation subset.
+\end{enumerate}
+
+
+\noindent Figure \ref{fig:HistogramTrainTestValSplit} visualizes the distributions of the individual subsets and compares them to the unused data. Additionally, three .csv files were computed to preprocess the data further.
+
+\section{Data augmentation of papyri data}
+\label{sec:fragmentation}
+As described in the raw data section, the available raw data vary considerably in height and width. In addition, several images are extensively large. That makes the use of \acp{dnn} difficult. However, much of the information contained in the image is repetitive. It has already been shown that training on whole images is can be avoided. Instead, it can be sufficient to identify small representative patches of an image and train the predictive model on them \cite{Pirrone21, Ostertag21}. In this thesis, these representative patches are extracted as follows:
+%
+\begin{enumerate}
+	\item Divide the image into \(m \times m\) non-overlapping patches.
+	\item Compare all detected parts with a metric.
+	\item Select the \(n\) best parts according to the selected metric.
+\end{enumerate}
+%
+The selected metric can be used to focus on different image parts. For example, the variance as a metric ensures that mainly the outer edges of a fragment are selected (Figure \ref{fig:patchSelection}). Before the patches are evaluated, it will be ensured that there is enough papyri surface on each patch. Therefore the intensity mean of each channel gets calculated. If the sum of these means is lower than 80\%, the patch will not be used. One exception is the first metric (random). Here the random choice was made between all patches. If there are not enough patches to fulfill these property, the patches with the most papyri surface get selected even there are almost white. That can slow down the performance but to form comparable batches it was decided not to use a different number of patches per fragment. That topic will be discussed in greater detail in chapter 5. 
+%
+\begin{figure}[t]
+	\label{fig:patchSelection}
+	\includegraphics[width=\textwidth]{figures/5_patch_selection_algortihm.pdf}
+	\caption{A metric changes the way how patches got selected.}
+\end{figure}
+%
+\begin{table}[]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{lllll}
+			\hline
+			\textbf{\#} & \textbf{name} & \textbf{selection procedures} & \textbf{patch\_size} & \textbf{n} \\ \hline
+			0 & baseline\_small\_small & random & 64 & 5 \\
+			1 & baseline\_small\_big & random & 64 & 20 \\
+			2 & baseline\_medium\_small & random & 128 & 5 \\
+			3 & baseline\_medium\_big & random & 128 & 20 \\
+			4 & baseline\_big\_small & random & 256 & 5 \\
+			5 & baseline\_big\_big & random & 256 & 20 \\
+			6 & mean\_small\_small & intensity-mean & 64 & 5 \\
+			7 & mean\_small\_big & intensity-mean & 64 & 20 \\
+			8 & mean\_medium\_small & intensity-mean & 128 & 5 \\
+			9 & mean\_medium\_big & intensity-mean & 128 & 20 \\
+			10 & mean\_big\_small & intensity-mean & 256 & 5 \\
+			11 & mean\_big\_big & intensity-mean & 256 & 20 \\
+			12 & text\_small\_small & prefer text & 64 & 5 \\
+			13 & text\_small\_big & prefer text & 64 & 20 \\
+			14 & text\_medium\_small & prefer text & 128 & 5 \\
+			15 & text\_medium\_big & prefer text & 128 & 20 \\
+			16 & text\_big\_small & prefer text & 256 & 5 \\
+			17 & text\_big\_big & prefer text & 256 & 20 \\
+			18 & h\_text\_small\_small & highlight text & 64 & 5 \\
+			19 & h\_text\_small\_big & highlight text & 64 & 20 \\
+			20 & h\_text\_medium\_small & highlight text & 128 & 5 \\
+			21 & h\_text\_medium\_big & highlight text & 128 & 20 \\
+			22 & h\_text\_big\_small & highlight text & 256 & 5 \\
+			23 & h\_text\_big\_big & highlight text & 256 & 20 \\
+			24 & h\_fibers\_small\_small & highlight background & 64 & 5 \\
+			25 & h\_fibers\_small\_big & highlight background & 64 & 20 \\
+			26 & h\_fibers\_medium\_small & highlight background & 128 & 5 \\
+			27 & h\_fibers\_medium\_big & highlight  background & 128 & 20 \\
+			28 & h\_fibers\_big\_small & highlight background & 256 & 5 \\
+			29 & h\_fibers\_big\_big & highlight  background & 256 & 20 \\ \hline
+		\end{tabular}%
+	}
+	\caption{Overview of the created datasets.}
+	\label{tab:datasets}
+\end{table}
+
+\begin{figure}[t]
+	\label{fig:dataset}
+	\includegraphics[width=\textwidth]{figures/6_datasets.pdf}
+	\caption{The papyri patch representations from dataset 1 to 5.}
+\end{figure}
+
+\subsection{Random}
+The metric "random" means that patches get selected randomly among each computed patch. The resulting datasets are created to obtain baseline results. Suppose there is no significant increase in the model performance compared to that dataset, then it is useless to apply a metric at all, especially since applying a metric is computationally expensive. Figure \ref{chap:Datasets} shows a papyrus image and its representations by random patches with different \(m\) and \(n\) values (dataset 0 - 5).
+
+\subsection{Mean}
+
+That metric chooses the patches where the patch intensity-mean is close to intensity mean of all fragments. It will be processed as follows to obtain suitable patches according to that metric:
+\begin{enumerate}
+	\item Calculate the pixel mean of each patch channel.
+	\item Calculate the absolute difference between the calculated patch channel mean and the global channel means.
+	\item Select the patches where the sum of the differences calculated in step 2 is the lowest. 
+\end{enumerate}
+
+\begin{figure}[t]	
+	\includegraphics[width=\textwidth]{figures/7_dataset_2.pdf}
+	\caption{The papyri patch representations from dataset 6 - 11.}
+	\label{fig:dataset2}
+\end{figure}
+
+The global channel intensity-mean values have been calculated before. The fragments were binarized (\ref{sec:deseperation}), and then the average channel mean of 100 fragments was evaluated. Since the mean will be shifted towards background areas, binarization was necessary to obtain more accurate results. That metric was chosen to select images close to the original image regarding their color distribution. Thus were are a representative subset of all pixels of the unpatched papyri image. Figure \ref{fig:dataset2} shows a papyrus image and representative patches with different \(m\) and \(n\) values (dataset 6 - 11).
+
+
+\begin{figure}[t]
+	\includegraphics[width=\textwidth]{figures/8_dataset_3.pdf}
+	\caption{The papyri patch representations from dataset 12 - 17.}
+	\label{fig:dataset3}
+\end{figure}
+
+\subsection{Prefer Text}
+Prefer text means that the patches with the highest text pixels are selected. A simple heuristic is used to determine the number of text pixels. After visual confirmation, that heuristic seems as reliable as more complicated computations. For the heuristic, each gray-scaled patch is locally thresholded with a threshold of 2\% intensity. Afterward, the remaining foreground pixels get counted and used as a score. In images with different intensities and color distribution, that score selected the patches with the most text onto them. If there are no text pixels on the patches, the patches with the most papyri pixels get selected. Figure \ref{fig:dataset3} shows a papyrus image and the selected text patches with different m and n values (dataset 0 - 5).
+
+
+\subsection{Highlight metrics}
+Highlighting text and fibers are more advanced metrics, and their calculation uses state-of-the-art binarization and inpainting. That task is regarded as the thesis's second milestone and will be described in Chapter 2. 
+
+\begin{figure}[t]
+	\includegraphics[width=\textwidth]{figures/9_sample_grid.pdf}
+	\caption{Natural papyri fragments after applying the raw data decomposition.}
+	\label{fig:sample_grid}
+\end{figure}
+
+
+
+
+

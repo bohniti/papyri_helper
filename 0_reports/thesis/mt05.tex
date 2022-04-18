@@ -1,0 +1,86 @@
+\chapter{Methodology}
+\label{chap:methodology}
+\Cref{chap:methodology} describes the set of experiments which have been used to answer the research questions from \Cref{chap:intro}. Firstly, necessary hypothesis will be made in order to select suitable hyperparameters. Secondly, the experiments are aligned in a process in order to draw reasonable conclusions. Lastly, a \ac{dnn} pipeline will be introduced which was used during this thesis.
+%
+\section{Experiments}
+\label{sec:experiments}
+As visualized in \Cref{fig:experiments}, the experiments are divided into the following five distinct phases: Firstly, a set of small-scale experiments are used to obtain early feedback. For instance, by using information from related work, different parameters are used. Another example is to experiment with the software implementation to be able to build a \ac{dml} pipeline as described in \Cref{sec:pipeline}. Since multiple parameters were changed simultaneously, the discovery phase is not evaluated in greater detail. Secondly, the author defined a set of parameters summarized in \Cref{tab:hypers}. Based on observations made during the first phase, the author of that thesis believes that parameters are a suitable baseline.\\
+Thirdly, each dataset will tested with the same configurations. Not changing the parameters allows to determining which dataset performs relativity well. The evaluation takes place in \Cref{sec:discussion}. As a fourth step, the author defines three hypothesis:
+%
+\begin{enumerate}
+	\item The \ac{netvlad} layer outperforms the max-pooling layer.
+	\item The DenseNet121 outperforms the ResNet18 architecture.
+	\item The multi similarity loss outperforms the triplet loss function.
+\end{enumerate}
+%
+The hypothesis are derived from the assumption that the initial parameters are a suitable baseline. In order to validate the hypothesis or reject them, eight additional\ac{dml} models will be trained. Each model has the same parameters as before, only the parameter corresponding to one of the hypothesis will be changed. The evaluation takes place in \Cref{chap:discussion} as well.\\ 
+
+\noindent Another experiment reevaluates the performance of dataset seven. That dataset is compelled of arbitrarily selected patches. Thus, the performance obtained once is not guaranteed to work constantly well. To that end, in the experiment multiple models are trained. For each training the patches can be different and it is not guaranteed that the patches are completely different. Their is a rather small probability that each fragment is the same. The probability depends on the number of patches for each fragment. For instance, if the number of total existing patches is rather small than it is almost guaranteed the some patches are the same. Therefore, the experiment ensures that models are trained on datasets with arbitrary patches performing on a constant level. A persuasive argument against only fitting patches to the  algorithms is that the obtained results can not be generalized for real-world applications. In order to ensure that the achieved results are also guaranteed in such applications, the experiments are evaluated with two different strategies:
+%
+\begin{itemize}
+	\item \textbf{Patch Level} means that the results are calculated by using individual patches of the same fragment. The total number of samples for each fragment depends on the parameters of the dataset's individual augmentation strategy (\Cref{chap:Datasets}).
+	\item \textbf{Fragment Level} means that the results are calculated by using nearly complete fragments. Large images have been cropped such that the highest spatial dimension is below 10,000 pixels. Since the models were not trained for that task specifically, the results are interpretable as self-supervised learning. The author expects that the performance will be lower, but at the same time, the results are better transferable to the real world.
+\end{itemize}
+%
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\textwidth]{figures/18_experiments.pdf}
+	\caption{Iterative process to obtain a DML model for papyrus fragment retrieval.}
+	\label{fig:experiments}
+\end{figure} 
+%
+\section{Deep metric learning pipeline}
+\label{sec:pipeline}
+A dedicated \ac{dml} pipeline is used to obtain a predictive model for papyrus fragment retrieval. The pipeline consists of an online cloud storage provider, source code, configuration files, and a virtual machine in which the code is executed. The datasets, configuration files, and source code are saved on Google Drive. Everything can be mapped onto the virtual machine once it is running. The type of virtual machine which is used is known as \ac{colab}. It allows acceleration of powerful hardware, which is required if \ac{dnn} models are trained. For the experiments, the training procedure was performed on a Tesla K80 \ac{gpu} with 12GB GDDR5 VRAM and 2496 CUDA cores in combination with a single core hyper-threaded Xeon Processor \@2.4 Ghz (1 core, two threads). The virtual machine can acquire a maximum of 16 GB of RAM. That is an advantage because it allows to process sufficiently large batches. If the batch size is rather small then the optimizer is more likely to suffer from local optima. Additionally the gradient is more flickering and as a result the loss curves are less smooth and become spiky. Thus, it is harder to find optimal solutions and therefore the performance is beneath the maximum potential. That is not true in general and depends highly on the dataset. However, for that thesis it was assumed to be true. The algorithm is implemented in the programming language python.\\
+\begin{table}[]
+	\centering
+	\scalebox{0.9}{
+		\begin{tabular}{@{}ll@{}}
+			\toprule
+			\textbf{Parameter} & \textbf{Value}         \\ \midrule
+			Epochs             & 100                    \\
+			Optimizer          & Adam                   \\
+			Batch Size         & 64                     \\
+			Model              & DenseNet121            \\
+			NetVLAD            & False                  \\
+			Metric Loss        & Triplet Margin Loss    \\
+			Mining             & Multi Similarity Miner \\
+			Normalize Mean 1:  & 0.6143                 \\
+			Normalize Mean 2:  & 0.6884                 \\
+			Normalize Mean 3:  & 0.7655                 \\
+			Normalize Std 1:   & 0.2909                 \\
+			Normalize Std 2:   & 0.2548                 \\
+			Normalize Std 3:   & 0.2122                 \\
+			Learning Rate:     & 0.001                  \\
+			Weight Decay       & 0.0001                 \\
+			Patience           & 2                      \\
+			Embedding Space:   & 512                    \\ \bottomrule
+		\end{tabular}%
+	}
+	\caption{Hyperparameters for training and validating \ac{dml} models.}
+	\label{tab:hypers}
+\end{table}
+The pipeline uses the software packages PyTorch, Pandas, Numpy, and PyTorch Metric Learning in order to obtain an algorithm with a decent run time. Implementing \ac{dml} algorithms is time-consuming and needs specifically engineered software to work properly. In the view of this thesis, properly means that the algorithms output is correct and does not contain computational errors. The means that weights have to be shared among for all three types of triplets. Furthermore, the mining procedure has to be implemented in a way that sampling works correct. The PyTorch metric learning library enables PyTorch practitioners to build a \ac{dml} algorithm which is no likely to suffer from these problems. The framework comes with two approaches:
+\begin{enumerate}
+	\item Use the libraries code in an existing PyTorch project by using a distinct set of modules e.g. for mining, training, and computation of the loss. 
+	\item The library provides specific functionality in an end-to-end manner. That means the user can use a trainer and tester function to compute \ac{dml} models directly\cite{Musgrave20}.
+\end{enumerate}
+The second approach was chosen for the implementation of this thesis, in which the implemented algorithm incorporates the following steps:
+\begin{itemize}
+	\item Within the \textbf{preparation} steps, the \ac{colab} environment is prepared along with a definition of all hyperparameters and configurations, such as the network architecture (e.g., ResNet18 or DenseNet121). 
+	\item In the \textbf{training} step, the \ac{pml} trainer function is used for training the algorithm and producing the results. The network was adjusted for that thesis such that the data fits into the network and works well with the patch-based approach. The adjustments which where made to make the algorithm work concern the individual papyri datasets, image transformations and a specific logging for the two distinct evaluation processes.
+	\item In the \textbf{validation} step, the algorithm contains code that reruns the model and identifies samples which have particular high or low performance. Furthermore the model will be evaluated on fragment level.
+\end{itemize}
+%
+\section{Validation and target metrics}
+\label{sec:metrics}
+The author has decided to use the \ac{p@1} and the \ac{map} evaluation metrics to ensure a correct and meaningful evaluation. The algorithm computes the embeddings for a complete batch to calculate the metrics. Afterward, the embeddings from a query fragment are calculated such that a \ac{knn} algorithm can be used to determine the closest reference embeddings. The \ac{knn} measures the difference between the query embeddings and the reference embeddings. That approach allows the algorithm to retrieve similar fragments by choosing the fragments in which the embeddings are close to the query.\\
+%
+\subsection{Precision at one}
+\label{sec:precision}
+The first metric used within this thesis is the \ac{p@1}. That metric is defined as the second nearest neighbour. If the neighbour is from the same class, the metric for a single sample is 100\%. If not, then it is 0\%. Since the first nearest neighbour is the query itself, it makes no sense to evaluate the first neighbour. For instance, the papyri of interest is the same as the first nearest neighbour. This information is not helpful for papyrologists because the expert is usually interested in similar fragments rather than the same fragment. A metric that evaluates how likely it is to obtain the first fragment, which is not the same fragment, is useful, easily interpretable, and gives an overview of how well an algorithm is performing.
+%
+\subsection{Mean average precision}
+The information given by the \ac{p@1} is limited, because it only measures the performance of one particular retrieved fragment. In a real-world scenario, papyri consists of an unknown number of fragments. Papyrologists are interested in an algorithm that selects a subset of potential candidates among all potential candidates. A metric that measures how well the algorithm performs on average for a different  number of samples is the \ac{map}. The measurement is defined as the mean out of multiple average precision values. The average precision is the average of multiple precision@\(N\) values. Finally, the precision@\(N\) is the quotient of correctly retrieved fragments among a set of \(N\) retrieved fragments.\\ 
+
+\noindent For instance, papyrologists make queries to a papyri database and aim to retrieve fragments similar to the query. If the researchers repeatedly perform the same database query for different \(N\) values they will be able to calculate a precision at \(N\) value each time. If they are taking the average of these values, they will obtain the average precision for that query. The scientists will repeat the calculations until each fragment in the database has been used once as a query. Finally they take the average precision of all average precision values of all queries, in order to obtain the mean average precision. That allows the scientists to determine the algorithms performance on the basis realistic scenario. 

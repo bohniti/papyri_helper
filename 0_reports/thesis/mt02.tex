@@ -1,0 +1,143 @@
+\chapter{Foundation}
+\label{chap:Foundation}
+This thesis is about \ac{dnn}, metric learning, and the retrieval of historical papyrus documents. The first part of this chapter shows chronologically why these topics matter and, more specifically, why the intersection between these topics matters. The state-of-the-art describes the former achievements and research gaps of related publications.
+%
+\section{History}
+\label{sec:history}
+As mentioned in the introduction, ancient documents are valuable as historical references. They serve as a scientific basis to confirm or reject the theories of historians, and due to the difficulty and complexity of analyzing such documents, the task is gaining interest among other scientific fields. For instance, more and more computer scientists are interested in analyzing historical documents \cite{Fiorucci20}. Several competitions were established with interests in writer identification, page retrieval, content classification, or related topics \cite{Christlein19, Cloppet17, Fiel17, Seuret20, Seuret21}. Some competitions focus on special subtasks, which are frequently used during the analysis of historical documents, for example, the separation of background and foreground \cite{Tensmeyer20}.
+New datasets allow researchers to compare their methods with each others \cite{Fiorucci20, Pratikakis19}. Table \ref{tab:competitions} provides an overview of the competitions held in recent years and Table \ref{tab:datasetsOverview} shows presents an overview about available data sets. Both tables are not complete, and only presented to emphasize that the field has grown in importance in recent years.\\
+
+\begin{table}[]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{@{}llll@{}}
+			\toprule
+			\textbf{Institution} & \textbf{Name}                                                       & \textbf{Year} & \textbf{Cited by} \\ \midrule
+			ICDAR                & Competition on Historical Newspaper Layout Analysis (HNLA 2013)     & 2013          & 61                \\
+			ICDAR                & Competition on text line detection in historical documents          & 2015          & 29                \\
+			ICDAR                & Competition on Layout Analysis for Challenging Medieval Manuscripts & 2017          & 39                \\
+			ICFHR & Competition on Handwritten Document Image Binarization (H-DIBCO 2018)                  & 2018 & 12 \\
+			ICFHR & Competition on Document Image Analysis Tasks for Southeast Asian Palm Leaf Manuscripts & 2018 & 5  \\
+			ICDAR                & Competition on Image Retrieval for Historical Handwritten Documents & 2019          & 9                 \\
+			ICDAR                & Competition on Historical Book Analysis - HBA2019                   & 2019          & 3                 \\
+			ICDAR & Historical Document Reading Challenge on Large Structured Chinese Family Records       & 2019 & 8  \\
+			ICDAR                & Competition on Document Image Binarization (DIBCO 2019)             & 2019          & 16                \\
+			ICFHR                & Competition on Image Retrieval for Historical Handwritten Fragments & 2020          & 3                 \\
+			ICDAR                & Competition on Historical Map Segmentation                          & 2021          & 4                 \\
+			ICDAR                & Competition on Historical Document Classification                   & 2021          & 1                 \\ \bottomrule
+		\end{tabular}%
+	}
+	\caption{Competitions in field of computer vision and historical documents since 2013.}
+	\label{tab:competitions}
+\end{table}
+%
+\noindent As in many computer science disciplines, there is a high success rate in using \ac{dnn} in \ac{cv}, primarily when used in a multi-step process to solve complex problems \cite{jonas14}. This trend was also recognized in the field of \ac{cv} for cultural heritage \cite{Tensmeyer20}.\\
+
+\noindent The universal approximation theorem is one reason for the success of \acp{dnn}. Mathematically speaking, any neural network architecture aims to find a mathematical function \(y = f(x)\) that can map input features \(x\) to an output \(y\). The accuracy of this function differs depending on the distribution of the dataset and the architecture of the network employed, but the function \(f(x)\) can be arbitrarily complex. The Universal Approximation Theorem states that \acp{dnn} are universal functions approximators. For every function \(f(x)\), a \acp{dnn} can find the original function \(y = f(x)\). That theorem holds for any number of inputs and outputs. Good knowledge of software engineering and powerful hardware is necessary to build and optimize deep neural networks \cite{Hornik89}.\\
+
+\noindent That means it is theoretically possible to find these heuristics without it, but it is hard to find them in practice. Moreover, the availability of software frameworks for \acp{dnn} and powerful hardware is also part of the success. In the context of this master thesis, \acp{dnn} are theoretically capable of finding a solution for every classification or retrieval task such as finding the approximation for a function which can retrieve papyrus fragments. To obtain a well-working approximation it is necessary to implement advanced algorithms and to optimize them, utilizing powerful hardware.\\
+
+\noindent In recent years, it has been shown that instead of learning relevant features, it is beneficial to the performance of such algorithms to learn an embedding that quantifies the similarity or dissimilarity between objects. This approach is called metric learning, and in connection with \acp{dnn}, it is called \ac{dml}.\\
+
+Metric learning aims to reduce the distance between objects from the same category and increase the distance between objects from different categories \cite{KAYA19}. This approach has proven successful when assembling similar things like puzzles or, like in the case of this master thesis, when assembling historical documents. Deep Neural Networks that follow this approach converge faster and cope better with many different classes \cite{Lais19, Ostertag21, Pirrone21}. A more detailed introduction to \acp{dnn} and \ac{dml} is stated in \Cref{chap:theory}.\\
+
+\noindent On the one hand, \ac{cv} for cultural heritage can benefit from \ac{dml} but on the other hand, implementing these algorithms can be tedious and time-consuming. PyTorch metric learning is an open-source library that aims to remove this barrier for both researchers and practitioners. The modular and flexible design allows users to quickly try out different combinations of algorithms in their existing code. It also comes with complete train and test workflows.\\
+
+\begin{table}[]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{@{}lllll@{}}
+			\toprule
+			\textbf{Name} &
+			\textbf{Description} &
+			\textbf{Task} &
+			\textbf{Provided at} &
+			\textbf{Year} \\ \midrule
+			AMADILontarSet &
+			Around 26,020 images  in certain categories. &
+			Text recognition &
+			ICFHR &
+			2016 \\
+			GRK-Papyri &
+			\begin{tabular}[c]{@{}l@{}}This dataset consists of 50 handwriting\\ samples in Greek on papyri.\\ Approximately from the 6th\\  century A.D., which belong to\\  10 different scribes\end{tabular} &
+			Reasembling &
+			ICDAR &
+			2019 \\
+			\begin{tabular}[c]{@{}l@{}}Sundanese\\ \\ Palm Leaf\\ Manuscript Dataset\end{tabular} &
+			\begin{tabular}[c]{@{}l@{}}he dataset was constructed from \\ 66 pages of 27 collections\\ of Sundanese palm leaf \\ manuscripts from the 15th century.\end{tabular} &
+			\begin{tabular}[c]{@{}l@{}}Handwriting\\ Recognition\end{tabular} &
+			IAPR &
+			2017 \\
+			Michigan Dataset &
+			\begin{tabular}[c]{@{}l@{}}1,118 papyri on 4,579 fragments\\ collected from the \\ University of Michigan\end{tabular} &
+			Fragment Retrival &
+			&
+			2021 \\
+			HisFragIR20 &
+			\begin{tabular}[c]{@{}l@{}}The train set contains \\ around 100,000 fragments\\  using the HistoricalIR19 \\ as a base dataset.\\ Most of them contain\\ some text, however, some \\ fragments are quite small.\\ The test set contains about 20,000 new fragments-\end{tabular} &
+			\begin{tabular}[c]{@{}l@{}}Fragment Retrical,\\ Writer Identification\end{tabular} &
+			ICFHR &
+			2020 \\ \bottomrule
+		\end{tabular}%
+	}
+	\caption{Selection of public datasets.}
+	\label{tab:datasetsOverview}
+\end{table}
+%
+\noindent The challenges in \ac{cv} for cultural heritage are manifold, and the number of publications is constantly increasing. In addition, the tasks and topics are again influenced by trends within the community. For example, papyrus is becoming increasingly attractive as a material. Often neglected in the past because of its high complexity, this complexity is becoming interesting now \cite{Tensmeyer20}.\\ 
+
+\noindent Also, when looking at the work of other computer vision practitioners, it can be noticed that other materials are analyzed first, and then the same methods are applied to papyrus documents. For example, Ostertag has shown that \ac{dml} is suitable for assembling broken clay shards \cite{Ostertag21}. In the following, Pirone first showed that this is also possible with papyrus, and then even proved that it is possible to assemble papyrus without knowing in advance to which document a papyrus fragment belongs \cite{Pirrone21}. 
+%
+\section{State-of-the-art}
+\label{sec:stateArt}
+The first authors who analyzed \ac{dml} to reassemble historical documents were Kelly Lais Wiggers, Alceu de Souza Britto Junior, Alessandro Lameiras Koerich, Laurent Heutte Luiz Eduardo Soares de Oliveira. Their publication, ``Deep Learning Approaches for Image Retrieval and Pattern Spotting in Ancient Documents'', used a \textit{Siamese Neural Network} to retrieve corresponding parts of the DocExplore dataset. A siamese \ac{nn} is a \ac{dml} architecture where weights are adjusted based on an anchor vector and a positive or negative example. That approach works well on the data compared to classical machine Learning techniques and other deep learning techniques. The publication was limited to the DocExplore dataset, and it remained open whether the approach works on a more realistic dataset \cite{Lais19}.\\
+
+\noindent That research gap is precisely the question that Cecilia Ostertag and Marie Burton addressed in their paper ''Matching ostraca fragments using a siamese neural network'', where they answered the question if \textit{Deep Metric Learning} is suitable for matching broken clay shards. They have shown that the approach is works and a higher accuracy is possible by utilizing fine-tuned parameters and deeper networks. Furthermore, it was shown that an easy-to-use application has to be provided for historians. Otherwise, the algorithms are too complicated to be used. The question of how \textit{metric learning works} with papyrus documents were not answered \cite{Ostertag21}.\\
+
+\begin{table}[]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{@{}llllll@{}}
+			\toprule
+			\textbf{Publication} &
+			\textbf{Dataset} &
+			\textbf{Test data} &
+			\textbf{Experiment} &
+			\textbf{mAP} &
+			\textbf{top-1} \\ \midrule
+			\begin{tabular}[c]{@{}l@{}}Deep Learning Approaches for Image Retrieval\\ and Pattern Spotting in Ancient Documents\end{tabular} &
+			DocExplore &
+			\begin{tabular}[c]{@{}l@{}}450 images\\ and 1464 quereis\end{tabular} &
+			Image retrieval &
+			0.57 &
+			- \\
+			Matching ostraca fragments using a siamese neural network &
+			Ostraca &
+			\begin{tabular}[c]{@{}l@{}}160 images\\ and 900 patches\end{tabular} &
+			Image retrieval &
+			- &
+			0.81 \\
+			Matching ostraca fragments using a siamese neural network &
+			Ostraca &
+			\begin{tabular}[c]{@{}l@{}}160 images\\ and 7000 patches\end{tabular} &
+			Image retrieval &
+			- &
+			0.96 \\
+			\begin{tabular}[c]{@{}l@{}}Self-supervised deep metric learning\\ for ancient papyrus fragments retrieval\end{tabular} &
+			HisFrag &
+			\begin{tabular}[c]{@{}l@{}}2,732 papyri on\\ 20,019  fragments\end{tabular} &
+			\begin{tabular}[c]{@{}l@{}}VGG16,\\ supervised learning\end{tabular} &
+			0.67 &
+			0.87 \\
+			\begin{tabular}[c]{@{}l@{}}Self-supervised deep metric learning\\ for ancient papyrus fragments retrieval\end{tabular} &
+			Michigan &
+			\begin{tabular}[c]{@{}l@{}}100 papyri on\\ 450  fragments\end{tabular} &
+			Resnet50 &
+			0.54 &
+			0.67 \\ \bottomrule
+		\end{tabular}%
+	}
+	\caption{Results from state-of-the-art related work.}
+	\label{tab:art}
+\end{table}
+%
+\noindent The first who addressed this question were Antoine Pirrone, Marie Beurton, and  Nicholas Journet. They analyzed the Hisfrag dataset and created a new dataset using digitalized papyri documents from the University of Michigan. More about how such a dataset can be created is presented in \Cref{chap:Datasets}. The authors used an approach similar to that of Ostertag and Wiggers. In addition, it was shown if training a model is possible even if not all information is available. More precisely, they examined what happens when a network is trained on a particular dataset and tested on another dataset of data. Additionally they experimented with self-supervised learning. That means to train a \ac{dnn} on some task A and evaluating the model on another task B. In their publication they trained a model which retrieved patches from fragments and evaluated the same model on fragment retrieval from papyrus documents \cite{Pirrone21}. All approaches worked with a \ac{map} of more than 60\%. \Cref{tab:art} summarizes the results of all three presented publications.\\
+
+\noindent Furthermore, it was shown that the success of a deep learning architecture varies from dataset to dataset. The authors found that supervised and self-supervised learning results differ, but the difference is not proofed as statically significant. Their publication assumed that text documents more valuable for matching papyrus fragments, but that statement was not further quantified. Papyrus, unlike clay shards, has a special texture unique to each papyrus, which has not been further investigated in previous work. Therefore, the research questions listed in \Cref{chap:intro} starts exactly here and investigate the influence of these papyrus characteristics. 
